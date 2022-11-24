@@ -32,9 +32,9 @@ jobs:
         with:
           RUSTTARGET: ${{ matrix.target }}
           # EXTRA_FILES: "README.md"
-          SRC_DIR: "src"
+          # SRC_DIR: "src"
           ARCHIVE_TYPES: ${{ matrix.archive }}
           # PRE_BUILD: "pre_build.sh"
           # POST_BUILD: "test/post_build.sh"
-          # MINIFY: "yes"
+          MINIFY: "yes"
 
