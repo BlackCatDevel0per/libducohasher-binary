@@ -28,7 +28,15 @@ jobs:
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.4.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TK }}
+        with:
+          RUSTTARGET: ${{ matrix.target }}
+          # EXTRA_FILES: "README.md"
+          SRC_DIR: "src"
+          ARCHIVE_TYPES: ${{ matrix.archive }}
+          # PRE_BUILD: "pre_build.sh"
+          # POST_BUILD: "test/post_build.sh"
+          # MINIFY: "yes"
         with:
           RUSTTARGET: ${{ matrix.target }}
           ARCHIVE_TYPES: ${{ matrix.archive }}
