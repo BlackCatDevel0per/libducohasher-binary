@@ -1,57 +1,22 @@
-name: Rust
-
-permissions:
-  contents: write
-
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-env:
-  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  release:
+    types: [created]
 
 jobs:
-  build:
+  release:
+    name: release ${{ matrix.target }}
+    runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macOS-latest]
-    runs-on: ${{ matrix.platform }}
-
+        target: [x86_64-pc-windows-gnu, x86_64-unknown-linux-musl]
     steps:
-      - name: checkout
-        uses: actions/checkout@v1
-      - name: Setup Rust environment
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@master
+      - name: Compile and release
+        uses: rust-build/rust-build.action@v1.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TK }}
         with:
-            profile: minimal
-            toolchain: stable
-            override: true
-      - name: Setup Python environment
-        uses: actions/setup-python@v1.1.1
-        with:
-          python-version: 3.7
-      - name: rust-cargo
-        uses: actions-rs/cargo@v1.0.1
-        with:
-          command: test
-      - name: py-deps
-        run: |
-          pip install --upgrade pip
-          pip install cffi maturin .
-      - name: py-install
-        run: |
-          maturin build --release      
-      - uses: actions/upload-artifact@v1
-        name: upload-wheel
-        with:
-          name: wheel-${{ matrix.platform }}
-          path: target/wheels/
-      - name: pip-install-wheel
-        run: |
-          pip debug --verbose
-          pip install target/wheels/example_rust_py*.whl
-      - name: test-python
-        run: python -I -m cexample.main
+          RUSTTARGET: ${{ matrix.target }}
+          # EXTRA_FILES: "README.md LICENSE"
 
