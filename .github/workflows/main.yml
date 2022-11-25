@@ -19,5 +19,5 @@ jobs:
     - name: Build
       run: cargo build --verbose
     - name: Run tests
-      run: ls -l
+      run: sudo apt install tree && tree
 
